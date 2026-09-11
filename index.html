@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RestaurantPro - Management System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <h1>🍽️ RestaurantPro</h1>
+            </div>
+            <ul class="navbar-menu">
+                <li><a href="#" onclick="showDashboard()" class="nav-link active">Dashboard</a></li>
+                <li><a href="#" onclick="showTables()" class="nav-link">Tische</a></li>
+                <li><a href="#" onclick="showOrders()" class="nav-link">Bestellungen</a></li>
+                <li><a href="#" onclick="showReservations()" class="nav-link">Reservierungen</a></li>
+                <li><a href="#" onclick="showBilling()" class="nav-link">Abrechnung</a></li>
+                <li><a href="#" onclick="showSettings()" class="nav-link">Einstellungen</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="section active">
+                <h2>📊 Dashboard</h2>
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <h3>Aktive Tische</h3>
+                        <p id="activeTables" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Tagesumsatz</h3>
+                        <p id="dailyRevenue" class="stat-value">€0.00</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Aktive Bestellungen</h3>
+                        <p id="activeOrders" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Reservierungen</h3>
+                        <p id="reservationCount" class="stat-value">0</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-section">
+                    <h3>Schnellzugriff</h3>
+                    <div class="quick-actions">
+                        <button onclick="showTables()" class="btn btn-primary">Tische verwalten</button>
+                        <button onclick="showNewOrder()" class="btn btn-success">Neue Bestellung</button>
+                        <button onclick="showNewReservation()" class="btn btn-info">Reservierung hinzufügen</button>
+                        <button onclick="exportDailyReport()" class="btn btn-secondary">Tagesbericht</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tables Section -->
+            <section id="tables" class="section">
+                <div class="section-header">
+                    <h2>📍 Tische</h2>
+                    <button onclick="addTable()" class="btn btn-primary">Tisch hinzufügen</button>
+                </div>
+
+                <div class="filters">
+                    <select id="tableFilter" onchange="filterTables()">
+                        <option value="">Alle Tische</option>
+                        <option value="free">Frei</option>
+                        <option value="occupied">Belegt</option>
+                        <option value="reserved">Reserviert</option>
+                    </select>
+                </div>
+
+                <div id="tablesGrid" class="tables-grid"></div>
+            </section>
+
+            <!-- Orders Section -->
+            <section id="orders" class="section">
+                <div class="section-header">
+                    <h2>📋 Bestellungen</h2>
+                    <button onclick="showNewOrder()" class="btn btn-primary">Neue Bestellung</button>
+                </div>
+
+                <div class="filters">
+                    <select id="orderFilter" onchange="filterOrders()">
+                        <option value="">Alle Bestellungen</option>
+                        <option value="pending">Ausstehend</option>
+                        <option value="preparing">In Zubereitung</option>
+                        <option value="ready">Fertig</option>
+                        <option value="served">Serviert</option>
+                        <option value="completed">Abgeschlossen</option>
+                    </select>
+                </div>
+
+                <div id="ordersList" class="orders-list"></div>
+            </section>
+
+            <!-- Reservations Section -->
+            <section id="reservations" class="section">
+                <div class="section-header">
+                    <h2>📅 Reservierungen</h2>
+                    <button onclick="showNewReservation()" class="btn btn-primary">Reservierung hinzufügen</button>
+                </div>
+
+                <div id="reservationsList" class="reservations-list"></div>
+            </section>
+
+            <!-- Billing Section -->
+            <section id="billing" class="section">
+                <div class="section-header">
+                    <h2>💳 Abrechnung</h2>
+                </div>
+
+                <div class="filters">
+                    <select id="billingFilter" onchange="filterBillings()">
+                        <option value="">Alle Rechnungen</option>
+                        <option value="pending">Ausstehend</option>
+                        <option value="paid">Bezahlt</option>
+                    </select>
+                </div>
+
+                <div id="billingsList" class="billings-list"></div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings" class="section">
+                <h2>⚙️ Einstellungen</h2>
+                
+                <div class="settings-group">
+                    <h3>Restaurant-Informationen</h3>
+                    <div class="form-group">
+                        <label>Restaurantname:</label>
+                        <input type="text" id="restaurantName" placeholder="Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Adresse:</label>
+                        <input type="text" id="restaurantAddress" placeholder="Adresse">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefon:</label>
+                        <input type="tel" id="restaurantPhone" placeholder="Telefon">
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h3>Tische verwalten</h3>
+                    <button onclick="initializeTables()" class="btn btn-secondary">Standardtische initialisieren</button>
+                    <p style="font-size: 0.9em; color: #666;">Erstellt 10 Tische mit unterschiedlichen Platzanzahlen</p>
+                </div>
+
+                <div class="settings-group">
+                    <h3>Daten verwalten</h3>
+                    <button onclick="exportData()" class="btn btn-info">Daten exportieren</button>
+                    <button onclick="clearAllData()" class="btn btn-danger">Alle Daten löschen</button>
+                </div>
+
+                <button onclick="saveSettings()" class="btn btn-primary">Speichern</button>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add/Edit Table Modal -->
+    <div id="tableModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="tableModalTitle">Tisch hinzufügen</h3>
+                <span class="close" onclick="closeModal('tableModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Tischnummer:</label>
+                    <input type="number" id="tableNumber" placeholder="z.B. 1" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Plätze:</label>
+                    <input type="number" id="tableSeats" placeholder="z.B. 4" min="1" max="20">
+                </div>
+                <div class="form-group">
+                    <label>Bereich:</label>
+                    <select id="tableArea">
+                        <option value="main">Hauptbereich</option>
+                        <option value="lounge">Lounge</option>
+                        <option value="terrace">Terrasse</option>
+                        <option value="vip">VIP</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal('tableModal')" class="btn btn-secondary">Abbrechen</button>
+                <button onclick="saveTable()" class="btn btn-primary">Speichern</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Order Modal -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Neue Bestellung</h3>
+                <span class="close" onclick="closeModal('orderModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Tisch:</label>
+                    <select id="orderTable"></select>
+                </div>
+                <div class="form-group">
+                    <label>Menü-Artikel:</label>
+                    <div id="menuItemsList"></div>
+                </div>
+                <div class="form-group">
+                    <label>Notizen:</label>
+                    <textarea id="orderNotes" placeholder="z.B. Allergien, Besonderheiten"></textarea>
+                </div>
+                <div id="orderPreview" class="order-preview"></div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal('orderModal')" class="btn btn-secondary">Abbrechen</button>
+                <button onclick="createOrder()" class="btn btn-primary">Bestellung erstellen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reservation Modal -->
+    <div id="reservationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Reservierung</h3>
+                <span class="close" onclick="closeModal('reservationModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Kundenname:</label>
+                    <input type="text" id="reservationName" placeholder="Name">
+                </div>
+                <div class="form-group">
+                    <label>Telefon:</label>
+                    <input type="tel" id="reservationPhone" placeholder="Telefon">
+                </div>
+                <div class="form-group">
+                    <label>Datum:</label>
+                    <input type="date" id="reservationDate">
+                </div>
+                <div class="form-group">
+                    <label>Zeit:</label>
+                    <input type="time" id="reservationTime">
+                </div>
+                <div class="form-group">
+                    <label>Gäste:</label>
+                    <input type="number" id="reservationGuests" min="1" placeholder="Anzahl Gäste">
+                </div>
+                <div class="form-group">
+                    <label>Tisch (optional):</label>
+                    <select id="reservationTable">
+                        <option value="">Automatisch zuweisen</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Notizen:</label>
+                    <textarea id="reservationNotes" placeholder="Besondere Wünsche"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal('reservationModal')" class="btn btn-secondary">Abbrechen</button>
+                <button onclick="saveReservation()" class="btn btn-primary">Speichern</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Billing Modal -->
+    <div id="billingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="billingTitle">Rechnung</h3>
+                <span class="close" onclick="closeModal('billingModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="billingContent"></div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="printBilling()" class="btn btn-info">Drucken</button>
+                <button onclick="markAsPaid()" class="btn btn-success">Bezahlt markieren</button>
+                <button onclick="closeModal('billingModal')" class="btn btn-secondary">Schließen</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
